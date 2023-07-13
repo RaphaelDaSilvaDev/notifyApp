@@ -1,0 +1,63 @@
+/*---General---*/
+* {
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
+}
+
+:root {
+  font-size: 62.5%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-size: 1.6rem;
+  overflow: overlay;
+  background-color: #f4f4f4;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+#input .content,
+#table .content {
+  margin-top: 3.2rem;
+
+  border-radius: 1.6rem;
+  padding: 1.6rem;
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: #242424;
+}
+
+.dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: 175ms ease;
+}
+
+.dropdown-menu.inactive {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-2rem);
+  transition: 175ms ease;
+}

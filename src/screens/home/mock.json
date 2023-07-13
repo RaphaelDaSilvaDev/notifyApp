@@ -1,0 +1,19 @@
+{
+  "data": [
+    {
+      "id": "01",
+      "text": "Um novo pedido de amizade de Roberto",
+      "type": "friend-request",
+      "time": "2023-07-12T20:17:24-03:00",
+      "hasAccept": null,
+      "wasSeen": false
+    },
+    {
+      "id": "02",
+      "text": "Nosso conteúdo foi atualizado",
+      "type": "update-content",
+      "time": "2023-07-12T18:17:24-03:00",
+      "wasSeen": false
+    }
+  ]
+}

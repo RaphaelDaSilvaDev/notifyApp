@@ -1,7 +1,7 @@
 {
-  "data": [
+  "notifications": [
     {
-      "id": "01",
+      "id": "1",
       "text": "Um novo pedido de amizade de Roberto",
       "type": "friend-request",
       "time": "2023-07-12T20:17:24-03:00",
@@ -9,7 +9,7 @@
       "wasSeen": false
     },
     {
-      "id": "02",
+      "id": "2",
       "text": "Nosso conteúdo foi atualizado",
       "type": "update-content",
       "time": "2023-07-12T18:17:24-03:00",

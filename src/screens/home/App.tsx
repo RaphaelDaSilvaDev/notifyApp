@@ -1,4 +1,11 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { useEffect, useRef, useState } from "react";
+
+import axios from "axios";
+import { useMutation, useQuery } from "react-query";
 import { Bell, SignOut } from "@phosphor-icons/react";
 
 import { NavBar } from "../../components/navBar";
@@ -7,15 +14,48 @@ import { NewNotifications } from "./components/newNotifications";
 import { OldNotifications } from "./components/oldNotifications";
 
 import { onMarkAll } from "./functions/markAll";
+import { markAsSeen } from "./functions/markAsSeen";
+import { markAcceptOrRejectFriend } from "./functions/markAcceptOrRejectFriend";
+import { GetNotificationByWasSeen } from "./functions/getNotificationsByWasSeen";
 
-import mock from "./mock.json";
-import { NotificationInterface } from "./interfaces";
+import { MarkAcceptOrRejectFriendProps, MarkAsSeenProps, NotificationProps } from "./interfaces";
 import { Logo, DropDownOverlay, DropdownPosition } from "./styles";
 
 function App() {
   const dropDownRef = useRef(null);
-  const [notifications, setNotifications] = useState<NotificationInterface[]>(mock.data);
   const [openNotifications, setOpenNotifications] = useState(false);
+
+  const {
+    data: notifications,
+    isLoading,
+    refetch,
+  } = useQuery<NotificationProps[]>("notifications", () => {
+    return axios
+      .get(`${import.meta.env.VITE_API_URL}/notifications`)
+      .then((response) => response.data);
+  });
+
+  const markAcceptOrRejectFriendFn = useMutation({
+    mutationFn: ({ id, type }: MarkAcceptOrRejectFriendProps) =>
+      markAcceptOrRejectFriend({ id, type }),
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
+
+  const wasSeenAll = useMutation({
+    mutationFn: (notifications: NotificationProps[]) => onMarkAll({ notifications }),
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
+
+  const markAsSeenFn = useMutation({
+    mutationFn: ({ id }: MarkAsSeenProps) => markAsSeen({ id }),
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
 
   useEffect(() => {
     const handle = (e) => {
@@ -36,8 +76,10 @@ function App() {
             icon={Bell}
             onClick={() => setOpenNotifications((prev) => !prev)}
             mark={
+              notifications &&
               notifications.length !== 0 &&
-              notifications.filter((item) => item.wasSeen === false).length !== 0
+              notifications &&
+              notifications.filter((item: NotificationProps) => item.wasSeen === false).length !== 0
             }
           />
           <NavBar.Option icon={SignOut} onClick={() => console.log("SingOut")} />
@@ -52,12 +94,28 @@ function App() {
           <DropDown.Root>
             <DropDown.Header>
               <p>Norificações</p>
-              <span onClick={() => onMarkAll({ notifications, setNotifications })}>
-                Marcar todas como lida
-              </span>
+              {notifications &&
+                GetNotificationByWasSeen({ notifications, wasSeen: false }).length !== 0 && (
+                  <span onClick={() => wasSeenAll.mutate(notifications)}>
+                    Marcar todas como lida
+                  </span>
+                )}
             </DropDown.Header>
-            <NewNotifications notifications={notifications} setNotifications={setNotifications} />
-            <OldNotifications notifications={notifications} setNotifications={setNotifications} />
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <>
+                <NewNotifications
+                  notifications={notifications}
+                  markAcceptOrRejectFriendFn={markAcceptOrRejectFriendFn.mutate}
+                  markAsSeenFn={markAsSeenFn.mutate}
+                />
+                <OldNotifications
+                  notifications={notifications}
+                  markAcceptOrRejectFriendFn={markAcceptOrRejectFriendFn.mutate}
+                />
+              </>
+            )}
           </DropDown.Root>
         </DropdownPosition>
       </DropDownOverlay>

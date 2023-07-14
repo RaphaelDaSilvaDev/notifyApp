@@ -1,8 +1,8 @@
-import { NotificationInterface } from "../interfaces";
+import { NotificationProps } from "../interfaces";
 
 interface GetNotificationByWasSeenProps {
   wasSeen?: boolean;
-  notifications: NotificationInterface[];
+  notifications: NotificationProps[];
 }
 
 export function GetNotificationByWasSeen({

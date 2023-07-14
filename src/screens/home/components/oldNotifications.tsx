@@ -3,28 +3,27 @@ import { GetNotificationByWasSeen } from "../functions/getNotificationsByWasSeen
 import { notificationsTypes } from "./notificationsTypes";
 
 import { DropDownItem } from "../styles";
-import { NotificationInterface } from "../interfaces";
+import { OldNotificationsProps } from "../interfaces";
 
-interface OldNotificationsProps {
-  notifications: NotificationInterface[];
-  setNotifications: React.Dispatch<React.SetStateAction<NotificationInterface[]>>;
-}
-
-export function OldNotifications({ notifications, setNotifications }: OldNotificationsProps) {
+export function OldNotifications({
+  notifications,
+  markAcceptOrRejectFriendFn,
+}: OldNotificationsProps) {
   return (
     <>
-      {GetNotificationByWasSeen({ notifications, wasSeen: true }).length !== 0 && (
+      {notifications && GetNotificationByWasSeen({ notifications, wasSeen: true }).length !== 0 && (
         <DropDownItem>
           <p>Antigas</p>
         </DropDownItem>
       )}
-      {GetNotificationByWasSeen({ notifications, wasSeen: true }).map((notification) => {
-        return notificationsTypes[notification.type]({
-          notification,
-          notifications,
-          setNotifications,
-        });
-      })}
+      {notifications &&
+        GetNotificationByWasSeen({ notifications, wasSeen: true }).map((notification) => {
+          return notificationsTypes[notification.type]({
+            markAcceptOrRejectFriendFn,
+            notification,
+            notifications,
+          });
+        })}
     </>
   );
 }
